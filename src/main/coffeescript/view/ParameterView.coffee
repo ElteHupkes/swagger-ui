@@ -4,7 +4,7 @@ class ParameterView extends Backbone.View
   render: ->
     @model.isBody = true if @model.paramType == 'body'
     @model.isFile = true if @model.dataType == 'file'
-
+    
     template = @template()
     $(@el).html(template(@model))
 
@@ -19,6 +19,11 @@ class ParameterView extends Backbone.View
     else
       $('.model-signature', $(@el)).html(@model.signature)
 
+    if @model.allowMultiple
+      $('<span class="allow-multiple">(Multiple, comma separated)</span>').appendTo(
+        $('.model-signature', $(@el))
+      );
+      
     contentTypeModel =
       isParam: false
 
@@ -37,7 +42,10 @@ class ParameterView extends Backbone.View
   # Return an appropriate template based on if the parameter is a list, readonly, required
   template: ->
     if @model.isList
-      Handlebars.templates.param_list
+      if @model.allowMultiple
+        Handlebars.templates.param_list_multiple
+      else
+        Handlebars.templates.param_list
     else
       if @options.readOnly
         if @model.required

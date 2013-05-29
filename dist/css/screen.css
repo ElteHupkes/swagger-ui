@@ -1715,6 +1715,11 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
   color: #555;
 }
 
+.model-signature .allow-multiple {
+	color:#ccc;
+	margin-left:5px;
+}
+
 pre code {
   background: none;
 }

@@ -74,7 +74,12 @@ class OperationView extends Backbone.View
       map = {}
       for o in form.serializeArray()
         if(o.value? && jQuery.trim(o.value).length > 0)
-          map[o.name] = o.value
+          # If the value already exists in this map, assume
+          # comma separated (allowMultiple) input.
+          if map[o.name]?
+            map[o.name] += ','+ o.value
+          else
+            map[o.name] = o.value
 
       isFileUpload = form.children().find('input[type~="file"]').size() != 0
 
