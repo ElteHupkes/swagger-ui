@@ -215,7 +215,7 @@ function program5(depth0,data) {
 function program7(depth0,data) {
   
   
-  return "\n                    <div style='margin:0;padding:0;display:inline'></div>\n                    <h4>Error Status Codes</h4>\n                    <table class='fullwidth'>\n                        <thead>\n                        <tr>\n                            <th>HTTP Status Code</th>\n                            <th>Reason</th>\n                        </tr>\n                        </thead>\n                        <tbody class=\"operation-status\">\n                        \n                        </tbody>\n                    </table>\n                    ";
+  return "\n                    <div style='margin:0;padding:0;display:inline'></div>\n                    <h4>Error Status Codes</h4>\n                    <table class='fullwidth'>\n                        <thead>\n                        <tr>\n                            <th>HTTP Status Code</th>\n                            <th>Reason</th>\n							<th>Response Class</th>\n                        </tr>\n                        </thead>\n                        <tbody class=\"operation-status\">\n                        \n                        </tbody>\n                    </table>\n                    ";
   }
 
 function program9(depth0,data) {
@@ -776,7 +776,7 @@ helpers = helpers || Handlebars.helpers; data = data || {};
   if (stack1 = helpers.reason) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.reason; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\n\n";
+  buffer += "</td>\n<td><span class=\"model-signature\"></span></td>\n";
   return buffer;
   });
 })();
@@ -889,7 +889,7 @@ function program12(depth0,data) {
   if (stack1 = helpers.description) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.description; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</td>\n<td>\n	<span class=\"model-signature\"></span>\n</td>\n\n";
+  buffer += "</td>\n<td><span class=\"model-signature\"></span></td>\n\n";
   return buffer;
   });
 })();
@@ -1698,9 +1698,32 @@ function program15(depth0,data) {
     StatusCodeView.prototype.initialize = function() {};
 
     StatusCodeView.prototype.render = function() {
-      var template;
+      var responseSignatureView, signatureModel, signatureView, template;
       template = this.template();
       $(this.el).html(template(this.model));
+      if (this.model.responseClassSignature && this.model.responseClassSignature !== 'string') {
+        signatureModel = {
+          sampleJSON: this.model.responseSampleJSON,
+          isParam: false,
+          signature: this.model.responseClassSignature
+        };
+        responseSignatureView = new SignatureView({
+          model: signatureModel,
+          tagName: 'div'
+        });
+        $('.model-signature', $(this.el)).append(responseSignatureView.render().el);
+      } else {
+        $('.model-signature', $(this.el)).html(this.model.responseClass);
+      }
+      if (this.model.sampleJSON) {
+        signatureView = new SignatureView({
+          model: signatureModel,
+          tagName: 'div'
+        });
+        $('.model-signature', $(this.el)).append(signatureView.render().el);
+      } else {
+        $('.model-signature', $(this.el)).html(this.model.signature);
+      }
       return this;
     };
 
